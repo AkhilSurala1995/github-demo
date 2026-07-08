@@ -4,7 +4,7 @@ image:
   registry: asia-south1-docker.pkg.dev
   project: "jenkins-demo-501207"  # set your GCP project ID
   repository: github-actions-demo/github-actions-demo
-  tag: e1f3f05b88014a08a3d004d75a130eda2f5b8bd3
+  tag: b163a3a4f5b18e23f5de23ab98b0b1087abc0230
   pullPolicy: IfNotPresent
 
 imagePullSecrets: []
