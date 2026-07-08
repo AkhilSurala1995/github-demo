@@ -1,4 +1,4 @@
-name: Java Maven Build and Push to GCR
+name: Java Maven Build and Push to Artifact Registry
 
 on:
   push:
@@ -6,6 +6,8 @@ on:
       - main
 
 env:
+  AR_REGION: asia-south1
+  AR_REPO: github-actions-demo
   IMAGE_NAME: github-actions-demo
 
 jobs:
@@ -24,8 +26,8 @@ jobs:
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
 
-      - name: Configure Docker for GCR
-        run: gcloud auth configure-docker gcr.io --quiet
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.AR_REGION }}-docker.pkg.dev --quiet
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v6
@@ -33,5 +35,5 @@ jobs:
           context: .
           push: true
           tags: |
-            gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-            gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
+            ${{ env.AR_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.AR_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ env.AR_REPO }}/${{ env.IMAGE_NAME }}:latest
