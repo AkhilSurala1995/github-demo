@@ -1,34 +1,37 @@
-name: Java Maven Build
+name: Java Maven Build and Push to GCR
 
 on:
   push:
     branches:
       - main
 
+env:
+  IMAGE_NAME: github-actions-demo
+
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
-          distribution: temurin
-          java-version: '17'
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      - name: Verify Java
-        run: java -version
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
 
-      - name: Verify Maven
-        run: mvn -version
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker gcr.io --quiet
 
-      - name: Build Project
-        run: mvn clean package
-
-      - name: List Target Files
-        run: ls -l target/
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.IMAGE_NAME }}:latest
