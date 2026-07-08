@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   registry: asia-south1-docker.pkg.dev
-  project: ""  # set your GCP project ID
+  project: "jenkins-demo-501207"  # set your GCP project ID
   repository: github-actions-demo/github-actions-demo
   tag: e1f3f05b88014a08a3d004d75a130eda2f5b8bd3
   pullPolicy: IfNotPresent
